@@ -1,0 +1,282 @@
+{% extends 'datas/../layout.html' %}
+
+{% block breadcrum %}
+
+
+<div class="header bg-dark pb-6">
+    <div class="container-fluid">
+        <div class="header-body">
+            <div class="row align-items-center py-4">
+                <div class="col-lg-6 col-7">
+                    <h6 class="h2 text-yellow d-inline-block mb-0">Données</h6>
+                    <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+                        <ol class="breadcrumb breadcrumb-links breadcrumb-yellow">
+                            <li class="breadcrumb-item"><a href="#"><i class="fas fa-home"></i></a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Données</li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="col-lg-6 col-5 text-right">
+                    <a href="#modal-upload" class="btn btn-lg btn-secondary"  data-toggle="modal" data-target="#modal-upload"><i class="fa fa-file mr-1"></i>Charger un fichier de données</a>
+                    <a href="#" class="btn btn-lg btn-secondary"><i class="fa fa-database mr-1"></i>Configurer</a>
+                    <a href="#modal-control" class="btn btn-lg btn-secondary" data-toggle="modal" data-target="#modal-control"><i class="fa fa-check mr-1"></i>Control</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock breadcrum %}
+
+
+
+
+{% block content %}
+
+<div class="container-fluid mt--6">
+    <div class="row justify-content-center">
+
+        <div class=" col ">
+            <div class="card">
+                <div class="card-header bg-transparent">
+                    <div class="row">
+                        <div class="col-lg-6 col-5">
+                            <h3 class="mb-0">Creation d'un dossier du personnel</h3>
+                        </div>
+                        <div class="col-lg-6 col-5 text-right">
+                            <div class="btn-group">
+                                <ul class="nav nav-pills nav-fill flex-column flex-md-row" id="tabs-icons-text" role="tablist">
+                                    <li class="nav-item">
+                                        <a class="nav-link " href="{% url 'dossier_list' %}"><i class="fa fa-arrow-left"></i>&nbsp;Retourner à la liste</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+               <div class="card-body">
+                   <h1>{% if object.pk %}Edit{% else %}Create{% endif %} Dossier du personnel</h1>
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="row bg-dark text-white pt-3">
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label for="{{ form.dossier_code.id_for_label }}">N° de Dossier *</label>
+                                    <input type="text" name="{{ form.dossier_code.name }}" id="{{ form.dossier_code.id_for_label }}" value="{{ form.dossier_code.value }}" class="form-control" readonly required>
+                                    {% if form.dossier_code.errors %}
+                                        <div class="invalid-feedback">
+                                            {% for error in form.dossier_code.errors %}
+                                                <div>{{ error }}</div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label for="{{ form2.matricule.id_for_label }}">Matricule *</label>
+                                    <input type="text" name="{{ form2.matricule.name }}" id="{{ form2.matricule.id_for_label }}" value="{{ form2.matricule.value }}" class="form-control" readonly required>
+                                    {% if form.matricule.errors %}
+                                        <div class="invalid-feedback">
+                                            {% for error in form2.matricule.errors %}
+                                                <div>{{ error }}</div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="form-group">
+                                    <label for="{{ form.dossier_label.id_for_label }}">Intitulé *</label>
+                                    <input type="text" name="{{ form.dossier_label.name }}" id="{{ form.dossier_label.id_for_label }}" value="{{ form.dossier_label.value }}" class="form-control" required>
+                                    {% if form.dossier_label.errors %}
+                                        <div class="invalid-feedback">
+                                            {% for error in form.dossier_label.errors %}
+                                                <div>{{ error }}</div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                               <div class="form-group">
+                                    <label for="{{ form2.job.id_for_label }}">Poste *</label>
+                                    <select name="{{ form2.job.name }}" id="{{ form2.job.id_for_label }}" class="form-control">
+                                        <option value=""></option>
+                                        {% for job in jobs %}
+                                            <option value="{{ job.id }}" {% if job.id == form2.job.value %}selected{% endif %}>
+                                                {{ job.job_title }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                    {% if form2.job.errors %}
+                                        <div class="invalid-feedback">
+                                            {% for error in form2.job.errors %}
+                                                <div>{{ error }}</div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr>
+                        <div class="row bg-dark text-white  pt-3">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="{{ form2.cni_number.id_for_label }}">CNI *</label>
+                                    <input type="text" name="{{ form2.cni_number.name }}" id="{{ form2.cni_number.id_for_label }}" value="{{ form2.cni_number.value }}" class="form-control" required>
+                                    {% if form.cni_number.errors %}
+                                        <div class="invalid-feedback">
+                                            {% for error in form2.cni_number.errors %}
+                                                <div>{{ error }}</div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="{{ form2.last_name.id_for_label }}">Nom *</label>
+                                    <input type="text" name="{{ form2.last_name.name }}" id="{{ form2.last_name.id_for_label }}" value="{{ form2.last_name.value }}" class="form-control" required>
+                                    {% if form2.last_name.errors %}
+                                        <div class="invalid-feedback">
+                                            {% for error in form2.last_name.errors %}
+                                                <div>{{ error }}</div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="{{ form2.first_name.id_for_label }}">Prénom *</label>
+                                    <input type="text" name="{{ form2.first_name.name }}" id="{{ form2.first_name.id_for_label }}" value="{{ form2.first_name.value }}" class="form-control" required>
+                                    {% if form2.first_name.errors %}
+                                        <div class="invalid-feedback">
+                                            {% for error in form2.first_name.errors %}
+                                                <div>{{ error }}</div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="{{ form2.sexe.id_for_label }}">Sexe *</label>
+                                    <select name="{{ form2.sexe.name }}" id="{{ form2.sexe.id_for_label }}" class="form-control">
+                                        <option value=""></option>
+                                        {% for sexe in sexes %}
+                                            <option value="{{ sexe.0 }}" {% if sexe.0 == form2.sexe.value %}selected{% endif %}>
+                                                {{ sexe.1 }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                    {% if form2.sexe.errors %}
+                                        <div class="invalid-feedback">
+                                            {% for error in form2.sexe.errors %}
+                                                <div>{{ error }}</div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="{{ form2.birthday.id_for_label }}">Date de naissance *</label>
+                                    <input type="date" name="{{ form2.birthday.name }}" id="{{ form2.birthday.id_for_label }}" value="{{ form2.birthday.value|date:'Y-m-d' }}" class="form-control" required>
+                                    {% if form2.birthday.errors %}
+                                        <div class="invalid-feedback">
+                                            {% for error in form2.birthday.errors %}
+                                                <div>{{ error }}</div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="{{ form2.birthplace.id_for_label }}">Lieu de naissance *</label>
+                                    <input type="text" name="{{ form2.birthplace.name }}" id="{{ form2.birthplace.id_for_label }}" value="{{ form2.birthplace.value }}" class="form-control" required>
+                                    {% if form2.birthplace.errors %}
+                                        <div class="invalid-feedback text-danger">
+                                            {% for error in form2.birthplace.errors %}
+                                                <div>{{ error }}</div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="{{ form2.email.id_for_label }}">Email *</label>
+                                    <input type="email" name="{{ form2.email.name }}" id="{{ form2.email.id_for_label }}" value="{{ form2.email.value }}" class="form-control" required>
+                                    {% if form2.email.errors %}
+                                        <div class="invalid-feedback">
+                                            {% for error in form2.email.errors %}
+                                                <div>{{ error }}</div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="{{ form2.phone_number.id_for_label }}">Téléphone *</label>
+                                    <input type="text" name="{{ form2.phone_number.name }}" id="{{ form2.phone_number.id_for_label }}" value="{{ form2.phone_number.value }}" class="form-control" required>
+                                    {% if form2.phone_number.errors %}
+                                        <div class="invalid-feedback">
+                                            {% for error in form2.phone_number.errors %}
+                                                <div>{{ error }}</div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <hr>
+
+                         <div class="form-group">
+                             <label for="{{ form.started_at.id_for_label }}">Date de recrutement *</label>
+                             <input type="date" name="{{ form.started_at.name }}" id="{{ form.started_at.id_for_label }}" value="{{ form.started_at.value|date:'Y-m-d' }}" class="form-control" required>
+                             {% if form.started_at.errors %}
+                                 <div class="invalid-feedback">
+                                     {% for error in form.started_at.errors %}
+                                         <div>{{ error }}</div>
+                                     {% endfor %}
+                                 </div>
+                             {% endif %}
+                         </div>
+
+                        <div class="form-group">
+                            <label for="{{ form.dossier_description.id_for_label }}">Remarque *</label>
+                            <textarea type="text" name="{{ form.dossier_description.name }}" id="{{ form.dossier_description.id_for_label }}" class="form-control">{{ form.dossier_description.value }}</textarea>
+                            {% if form.dossier_description.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.dossier_description.errors %}
+                                        <div>{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">{{ action }}</button>
+                    </form>
+                    <a  class="btn btn-link" href="{% url 'organisation_list' %}">Annuler</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+
+
+{% block script%}
+    <script>
+
+    </script>
+{% endblock %}

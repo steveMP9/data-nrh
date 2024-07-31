@@ -1,0 +1,144 @@
+{% extends 'datas/resultat.html' %}
+
+{% block description%}
+<div class="row">
+    <div class="col">
+        <div class="card bg-default shadow">
+            <div class="card-header bg-transparent border-0">
+                <h3 class="text-white mb-0">Description des données</h3>
+            </div>
+            <div class="table-responsive">
+                {{ description | safe }}
+            </div>
+        </div>
+        <div class="card shadow">
+            <div class="card-header bg-dark border-0 ">
+                <h1 class="text-white" data-toggle="collapse" data-target="#multiCollapseExample2" aria-expanded="false" aria-controls="multiCollapseExample2"><i class="fa fa-arrow-down"></i>DESCRIPTION DES VARIABLES QUALITATIVES</h1>
+            </div>
+            <div class="collapse multi-collapse" id="multiCollapseExample2">
+                <h2 class=" mb-0">Tableau croisé dynamique </h2>
+                <div class="card shadow">
+                    <div class="row">
+                        {% for x in crosstable %}
+                            <div class="col-6">
+                                {{ x | safe }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="card-header border-0">
+                    <h2 class=" mb-0">Graphiques <button class="btn btn-info mr-2" id="graphQuant">Afficher</button></h2>
+                </div>
+
+                <div class="row" id="figs">
+                    
+                </div>
+            </div>
+            <br>
+
+
+            <div class="card-header bg-dark border-0 text-white">
+                <h1 class="text-white" data-toggle="collapse" data-target="#multiCollapseExample1" aria-expanded="false" aria-controls="multiCollapseExample1"><i class="fa fa-arrow-down"></i>DESCRIPTION DES VARIABLES QUANTITATIVES</h1>
+            </div>
+            <div class="collapse multi-collapse" id="multiCollapseExample1">
+                <div class="card-header border-0">
+                    <h2 class=" mb-0">Graphiques <button class="btn btn-info mr-2" id="graphQual">Afficher</button></h2>
+                </div>
+
+                <div class="row" id="figs2">
+                    
+                </div>
+            </div>
+            
+            <br>
+            
+
+            <div class="card-header bg-dark border-0 text-white">
+                <h1 class="text-white" data-toggle="collapse" data-target="#multiCollapseExample3" aria-expanded="false" aria-controls="multiCollapseExample3"><i class="fa fa-arrow-down"></i>CORRELATION DE DONNEES</h1>
+            </div>
+            <div class="collapse multi-collapse" id="multiCollapseExample3">
+                <div class="card-header border-0">
+                    <h2 class=" mb-0">Correlation des variables <button class="btn btn-info mr-2" id="corr">Afficher</button></h2>
+                </div>
+
+                <div class="row" id="correlation">
+                    <div class="col-12"><img id="correlation_fig" style=" width:90%;"></div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</div>
+{% endblock %}
+
+{% block style %}
+    <style>
+        .dataframe{
+            width:100%;
+            color: #ffffff;
+            border: 1px solid #000000;
+            background-color: rgb(50, 12, 112);
+
+        }
+
+        .dataframe thead{
+            background-color: #333333;
+            color: #ffffff;
+        }
+    </style>
+{% endblock%}
+
+
+{% block script%}
+    <script>
+        $(document).ready(function(){
+            $("#corr").click(function(){
+                $.ajax({
+                    type: "get",
+                    url:"{% url 'corelation'%}",
+                    success: function(response){
+                        $("#correlation_fig").attr("src","data:image/png;base64,"+response);
+                    }
+                })
+            });
+            
+            $("#graphQuant").click(function(){
+                $.ajax({
+                    type: "get",
+                    url:"{% url 'graphiquesquant'%}",
+                    success: function(response){
+                        console.log(response);
+                        var html = '';
+
+                        response.forEach(function(item){
+                            html += '<div class="col-6"><img id="correlation" src="data:image/png;base64,'+item[1]+'" style=" width:90%;"></div>';
+                            html += '<div class="col-6"><img id="correlation" src="data:image/png;base64,'+item[2]+'" style=" width:90%;"></div>'; 
+                        })
+
+                        $("#figs").append(html);
+                    }
+                })
+            });
+
+            $("#graphQual").click(function(){
+                $.ajax({
+                    type: "get",
+                    url:"{% url 'graphiquesqual'%}",
+                    success: function(response){
+                        console.log(response);
+                        var html = '';
+
+                        response.forEach(function(item){
+                            html += '<div class="col-12"><h3 class="text-white bg-warning"><i class="fa fa-check mr-2"></i>'+item[0]+'</h3></div>';
+                            html += '<div class="col-6"><img id="correlation" src="data:image/png;base64,'+item[1]+'" style=" width:90%;"></div>';
+                            html += '<div class="col-6"><img id="correlation" src="data:image/png;base64,'+item[2]+'" style=" width:90%;"></div>'; 
+                        })
+
+                        $("#figs2").append(html);
+                    }
+                })
+            });
+        })
+        
+    </script>
+{% endblock %}

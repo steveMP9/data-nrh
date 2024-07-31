@@ -1,0 +1,147 @@
+{% extends 'datas/../layout.html' %}
+
+{% block breadcrum %}
+
+
+<div class="header bg-dark pb-6">
+    <div class="container-fluid">
+        <div class="header-body">
+            <div class="row align-items-center py-4">
+                <div class="col-lg-6 col-7">
+                    <h6 class="h2 text-yellow d-inline-block mb-0">Données</h6>
+                    <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+                        <ol class="breadcrumb breadcrumb-links breadcrumb-yellow">
+                            <li class="breadcrumb-item"><a href="#"><i class="fas fa-home"></i></a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Données</li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="col-lg-6 col-5 text-right">
+                    <a href="#modal-upload" class="btn btn-lg btn-secondary"  data-toggle="modal" data-target="#modal-upload"><i class="fa fa-file mr-1"></i>Charger un fichier de données</a>
+                    <a href="#" class="btn btn-lg btn-secondary"><i class="fa fa-database mr-1"></i>Configurer</a>
+                    <a href="#modal-control" class="btn btn-lg btn-secondary" data-toggle="modal" data-target="#modal-control"><i class="fa fa-check mr-1"></i>Control</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock breadcrum %}
+
+
+
+
+{% block content %}
+
+<div class="container-fluid mt--6">
+    <div class="row justify-content-center">
+
+        <div class=" col ">
+            <div class="card">
+                <div class="card-header bg-transparent">
+                    <div class="row">
+                        <div class="col-lg-6 col-5">
+                            <h3 class="mb-0">Enregistrement d'un état</h3>
+                        </div>
+                        <div class="col-lg-6 col-5 text-right">
+                            <div class="btn-group">
+                                <ul class="nav nav-pills nav-fill flex-column flex-md-row" id="tabs-icons-text" role="tablist">
+                                    <li class="nav-item">
+                                        <a class="nav-link " href="{% url 'discipline_list' %}"><i class="fa fa-arrow-left"></i>&nbsp;Retourner à la liste</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+               <div class="card-body">
+                   <h1>{% if object.pk %}Edit{% else %}Create{% endif %} Etat (Discipline)</h1>
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="{{ form.person.id_for_label }}">Personne</label>
+                            <select name="{{ form.person.name }}" id="{{ form.person.id_for_label }}" class="form-control">
+                                <option value=""></option>
+                                {% for choice in persons %}
+                                    <option value="{{ choice.id }}" {% if choice.id == form.person.value %}selected{% endif %}>
+                                        {{ choice.last_name }} {{ choice.first_name }} - {{ choice.job.job_title }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                            {% if form.person.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.person.errors %}
+                                        <div>{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="form-group">
+                            <label for="{{ form.discipline_type.id_for_label }}">Type</label>
+                            <select name="{{ form.discipline_type.name }}" id="{{ form.discipline_type.id_for_label }}" class="form-control">
+                                <option value=""></option>
+                                {% for choice in types %}
+                                    <option value="{{ choice.0 }}" {% if choice.0 == form.discipline_type.value %}selected{% endif %}>
+                                        {{ choice.1 }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                            {% if form.discipline_type.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.discipline_type.errors %}
+                                        <div>{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="form-group">
+                            <label for="{{ form.discipline_date.id_for_label }}">Date *</label>
+                            <input type="date" name="{{ form.discipline_date.name }}" id="{{ form.discipline_date.id_for_label }}" value="{{ form.discipline_date.value|date:'Y-m-d' }}" class="form-control" required>
+                            {% if form.discipline_date.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.discipline_date.errors %}
+                                        <div>{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="form-group">
+                            <label for="{{ form.discipline_heure.id_for_label }}">Heure *</label>
+                            <input type="time" name="{{ form.discipline_heure.name }}" id="{{ form.discipline_heure.id_for_label }}" value="{{ form.discipline_heure.value|date:'H:i' }}" class="form-control" required>
+                            {% if form.discipline_heure.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.discipline_heure.errors %}
+                                        <div>{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="form-group">
+                            <label for="{{ form.discipline_motif.id_for_label }}">Motif </label>
+                            <textarea type="text" name="{{ form.discipline_motif.name }}" id="{{ form.discipline_motif.id_for_label }}" class="form-control">{{ form.discipline_motif.value }}</textarea>
+                            {% if form.discipline_motif.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.discipline_motif.errors %}
+                                        <div>{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <button type="submit" class="btn btn-primary">{{ action }}</button>
+                    </form>
+                    <a  class="btn btn-link" href="{% url 'organisation_list' %}">Annuler</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+
+
+{% block script%}
+    <script>
+
+    </script>
+{% endblock %}

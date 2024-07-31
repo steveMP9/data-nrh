@@ -1,0 +1,62 @@
+{% extends 'datas/../layout.html' %}
+
+{% block breadcrum %}
+
+<!-- Header -->
+<div class="header bg-indigo pb-6">
+    <div class="container-fluid">
+        <div class="header-body">
+            <div class="row align-items-center py-4">
+                <div class="col-lg-12 col-7">
+                    <h6 class="h2 text-white d-inline-block mb-0">Team</h6>
+                    <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+                        <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                            <li class="breadcrumb-item"><a href="#"><i class="fas fa-home"></i></a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Team</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock breadcrum %}
+
+
+
+
+{% block content %}
+
+<div class="container-fluid mt--6">
+  <div class="row justify-content-center">
+      <div class=" col ">
+          <div class="card p-3">
+              <div class="row">
+                  <div class="col-xl-12 col-md-12">
+                      <div class="card card-stats">
+                          <!-- Card body -->
+                          <div class="card-body">
+                              <form action="" method="post" enctype="multipart/form-data">
+                                  {% csrf_token %}
+
+                                <div class="form-group mb-4 mt-3">
+                                    <input type="file" title="Upload excel file" name="excel_file" class="form-control" id="exampleFormControlFile1" required="required" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
+                                </div>
+
+                                <div class="form-group hide">
+                                    <input type="text" id="separateur" name="separateur" placeholder="Colones séparé par" class="form-control">
+                                </div>
+
+                                <button type="submit" name="time" class="mt-4 mb-4 btn btn-primary btn-block"><i class="ni ni-cloud-upload-96 ni-lg mr-2"></i> Charger</button>
+                              </form>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+
+
+{% endblock content %}

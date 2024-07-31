@@ -1,0 +1,144 @@
+{% extends 'auth/../auth.html' %}
+
+{% block content %}
+
+
+      <div class="row mt-lg-n10 mt-md-n11 mt-n10 justify-content-center">
+        <div class="col-xl-4 col-lg-5 col-md-7 mx-auto">
+          <div class="card z-index-0">
+            <div class="card-header text-center pt-4">
+                <h1><i class="fa fa-user-lock"></i></h1>
+                <h5>Authentification</h5>
+            </div>
+            <div class="card-body">
+              <form role="form" method="post">
+                  {% csrf_token %}
+                  <div class="mb-3">
+                      <input type="text" class="form-control" name="{{ form.username.name }}" id="{{ form.username.id_for_label }}" placeholder="{{ form.username.name }}" aria-label="{{ form.username.name }}">
+                      {{ form.username.errors }}
+                  </div>
+                  <div class="mb-3">
+                      <input type="password" class="form-control" name="{{ form.password.name }}" id="{{ form.password.id_for_label }}" placeholder="{{ form.password.name }}" aria-label="{{ form.password.name }}">
+                      {{ form.password.errors }}
+                  </div>
+                  <div class="text-center">
+                      <button type="submit" class="btn bg-gradient-warning w-100 my-4 mb-2">Connexion</button>
+                  </div>
+
+                  {% if form.non_field_errors %}
+                      <div class="errorlist">
+                          {{ form.non_field_errors }}
+                      </div>
+                  {% endif %}
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+{% endblock content %}
+
+
+{% block style %}
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        #map {
+            height: 500px;
+        }
+    </style>
+{% endblock %}
+
+{% block script %}
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        function updateLocation() {
+            if (navigator.geolocation) {
+                var latitude = 0;
+                var longitude = 0;
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    var latitude = position.coords.latitude;
+                    var longitude = position.coords.longitude;
+                    $("#latitude").val(latitude);
+                    $("#longitude").val(longitude);
+                    console.log(latitude+"-"+longitude);
+                    // Envoyer les données au serveur
+                    fetch('/geolocation/update-location/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                            'X-CSRFToken': getCookie('csrftoken')
+                        },
+                        body: `latitude=${latitude}&longitude=${longitude}`
+                    }).then(response => response.json()).then(data => {
+                        console.log(data);
+                    });
+
+                    // Afficher la position sur la carte
+                    var map = L.map('map').setView([latitude, longitude], 13);
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    }).addTo(map);
+
+                    var marker = L.marker([latitude, longitude]).addTo(map);
+                    marker.bindPopup("<b>You are here!</b>").openPopup();
+                });
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+            return {lat:latitude, long:longitude}
+        }
+
+        function checkProximity(targetLat, targetLon) {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    const userLat = position.coords.latitude;
+                    const userLon = position.coords.longitude;
+
+                    const distance = getDistanceFromLatLonInMeters(userLat, userLon, targetLat, targetLon);
+
+                    if (distance <= 50) {
+                        alert('You are within 50 meters of the target location.');
+                    } else {
+                        alert('You are more than 50 meters away from the target location.');
+                    }
+
+                    console.log(`Distance to target: ${distance} meters`);
+                });
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        }
+
+        function getDistanceFromLatLonInMeters(lat1, lon1, lat2, lon2) {
+            const R = 6371e3; // Rayon de la Terre en mètres
+            const φ1 = lat1 * Math.PI / 180; // Latitude en radians
+            const φ2 = lat2 * Math.PI / 180; // Latitude en radians
+            const Δφ = (lat2 - lat1) * Math.PI / 180; // Différence de latitude en radians
+            const Δλ = (lon2 - lon1) * Math.PI / 180; // Différence de longitude en radians
+
+            const a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+                      Math.cos(φ1) * Math.cos(φ2) *
+                      Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+            return R * c; // Distance en mètres
+        }
+
+        updateLocation();
+    </script>
+{% endblock %}

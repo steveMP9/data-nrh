@@ -1,0 +1,129 @@
+{% extends 'datas/../layout.html' %}
+
+{% block breadcrum %}
+
+
+<div class="header bg-dark pb-6">
+    <div class="container-fluid">
+        <div class="header-body">
+            <div class="row align-items-center py-4">
+                <div class="col-lg-6 col-7">
+                    <h6 class="h2 text-yellow d-inline-block mb-0">Données</h6>
+                    <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+                        <ol class="breadcrumb breadcrumb-links breadcrumb-yellow">
+                            <li class="breadcrumb-item"><a href="#"><i class="fas fa-home"></i></a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Données</li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="col-lg-6 col-5 text-right">
+                    <a href="#modal-upload" class="btn btn-lg btn-secondary"  data-toggle="modal" data-target="#modal-upload"><i class="fa fa-file mr-1"></i>Charger un fichier de données</a>
+                    <a href="#" class="btn btn-lg btn-secondary"><i class="fa fa-database mr-1"></i>Configurer</a>
+                    <a href="#modal-control" class="btn btn-lg btn-secondary" data-toggle="modal" data-target="#modal-control"><i class="fa fa-check mr-1"></i>Control</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock breadcrum %}
+
+
+
+
+{% block content %}
+
+<div class="container-fluid mt--6">
+    <div class="row justify-content-center">
+
+        <div class=" col ">
+            <div class="card">
+                <div class="card-header bg-transparent">
+                    <div class="row">
+                        <div class="col-lg-6 col-5">
+                            <h3 class="mb-0">Liste de hiérachies (Organigramme)</h3>
+                        </div>
+                        <div class="col-lg-6 col-5 text-right">
+                            <div class="btn-group">
+                                <ul class="nav nav-pills nav-fill flex-column flex-md-row" id="tabs-icons-text" role="tablist">
+                                    <li class="nav-item">
+                                        <a class="nav-link " href="{% url 'organisation_list' %}"><i class="fa fa-arrow-left"></i>&nbsp;Retourner à la liste</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+               <div class="card-body">
+                   <h1>{% if object.pk %}Edit{% else %}Create{% endif %} Organisation</h1>
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="{{ form.organisation_name.id_for_label }}">Code *</label>
+                            <input type="text" name="{{ form.organisation_code.name }}" id="{{ form.organisation_code.id_for_label }}" value="{{ form.organisation_code.value }}" class="form-control" required>
+                            {% if form.organisation_code.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.organisation_code.errors %}
+                                        <div>{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="form-group">
+                            <label for="{{ form.organisation_name.id_for_label }}">Nom de la hiérachie</label>
+                            <input type="text" name="{{ form.organisation_name.name }}" id="{{ form.organisation_name.id_for_label }}" value="{{ form.organisation_name.value }}" class="form-control" required>
+                            {% if form.organisation_name.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.organisation_name.errors %}
+                                        <div>{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="form-group">
+                            <label for="{{ form.organisation_description.id_for_label }}">Présentation</label>
+                            <textarea type="text" name="{{ form.organisation_description.name }}" id="{{ form.organisation_description.id_for_label }}" value="{{ form.organisation_description.value }}" class="form-control"></textarea>
+                            {% if form.organisation_description.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.organisation_name.errors %}
+                                        <div>{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="form-group">
+                            <label for="{{ form.parent.id_for_label }}">Supérieur</label>
+                            <select name="{{ form.parent.name }}" id="{{ form.parent.id_for_label }}" class="form-control">
+                                <option value=""></option>
+                                {% for choice in form.parent.field.queryset %}
+                                    <option value="{{ choice.id }}" {% if choice.id == form.parent.value %}selected{% endif %}>
+                                        {{ choice }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                            {% if form.parent.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.parent.errors %}
+                                        <div>{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <button type="submit" class="btn btn-primary">{{ action }}</button>
+                    </form>
+                    <a  class="btn btn-link" href="{% url 'organisation_list' %}">Annuler</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+
+
+{% block script%}
+    <script>
+
+    </script>
+{% endblock %}

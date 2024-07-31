@@ -1,0 +1,122 @@
+{% extends 'datas/../layout.html' %}
+{% load static %}
+{% block breadcrum %}
+
+
+<div class="header bg-dark pb-6">
+    <div class="container-fluid">
+        <div class="header-body">
+            <div class="row align-items-center py-4">
+                <div class="col-lg-6 col-7">
+                    <h6 class="h2 text-yellow d-inline-block mb-0">Données</h6>
+                    <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+                        <ol class="breadcrumb breadcrumb-links breadcrumb-yellow">
+                            <li class="breadcrumb-item"><a href="#"><i class="fas fa-home"></i></a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Données</li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="col-lg-6 col-5 text-right">
+                    <a href="#modal-upload" class="btn btn-lg btn-secondary"  data-toggle="modal" data-target="#modal-upload"><i class="fa fa-file mr-1"></i>Charger un fichier de données</a>
+                    <a href="#" class="btn btn-lg btn-secondary"><i class="fa fa-database mr-1"></i>Configurer</a>
+                    <a href="#modal-control" class="btn btn-lg btn-secondary" data-toggle="modal" data-target="#modal-control"><i class="fa fa-check mr-1"></i>Control</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock breadcrum %}
+
+
+
+
+{% block content %}
+
+<div class="container-fluid mt--6">
+    <div class="row justify-content-center">
+
+        <div class=" col ">
+            <div class="card">
+                <div class="card-header bg-transparent">
+                    <div class="row">
+                        <div class="col-lg-6 col-5">
+                            <h3 class="mb-0">Etat de la discipline</h3>
+                        </div>
+                        <div class="col-lg-6 col-5 text-right">
+                            <div class="btn-group">
+                                <ul class="nav nav-pills nav-fill flex-column flex-md-row" id="tabs-icons-text" role="tablist">
+                                    <li class="nav-item">
+                                        <a class="nav-link " href="{% url 'create_discipline' %}"><i class="fa fa-plus-circle"></i>Enregistrer un etat</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+               <div class="card-body">
+                     <div class="table-responsive">
+                         <table id="myTable2" class="table table-bordered table-striped align-items-center table-dark">
+                             <thead>
+                                <th>Code</th>
+                                <th>Nom et prénom</th>
+                                <th>Type</th>
+                                <th>Date</th>
+                                <th>Heure</th>
+                                <th>Motif</th>
+                                <th>Actions</th>
+                             </thead>
+                             <tbody>
+                                {% for discipline in disciplines %}
+                                    <tr>
+                                        <td>{{ discipline.discipline_code }}</td>
+                                        <td>{{ discipline.person.first_name }}{{ discipline.person.last_name }}</td>
+                                        <td>{{ discipline.discipline_type }}</td>
+                                        <td>{{ discipline.discipline_date }}</td>
+                                        <td>{{ discipline.discipline_heure }}</td>
+                                        <td>{{ discipline.discipline_motif }}</td>
+                                        <td>
+                                            <div class="btn-group">
+                                                <a class="btn btn-info btn-sm" href="{% url 'discipline_detail' discipline.pk %}" title="Voir"><i class="fa fa-eye"></i></a>
+                                                <a class="btn btn-warning btn-sm" href="{% url 'update_discipline' discipline.pk %}" title="Modifier"><i class="fa fa-edit"></i></a>
+                                                <form method="post" action="{% url 'delete_discipline' discipline.pk %}" style="display:inline;">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="_method" value="DELETE">
+                                                    <button type="submit" class="btn btn-danger btn-sm" title="Supprimer"><i class="fa fa-trash"></i></button>
+                                                </form>
+{#                                                <a class="btn btn-danger btn-sm" href="{% url 'delete_organisation' organisation.pk %}" title="Supprimer"><i class="fa fa-trash"></i></a>#}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                             </tbody>
+                         </table>
+                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+
+
+{% block script%}
+  <script src={% static "datatables.net/js/jquery.dataTables.min_2.js" %}></script>
+    <script>
+    $(document).ready(function() {
+        $('#myTable2').DataTable({
+            "columns": [
+                {"data": "Code"},
+                {"data": "Nom et prenom"},
+                {"data": "Type"},
+                {"data": "Date"},
+                {"data": "Heure"},
+                {"data": "Motif"},
+                {"data": "Actions"},
+            ]
+        });
+    });
+    </script>
+{% endblock %}

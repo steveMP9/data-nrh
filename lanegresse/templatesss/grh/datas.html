@@ -1,0 +1,241 @@
+{% extends 'datas/../../../templates/layout.html' %}
+
+{% block breadcrum %}
+
+
+<div class="header bg-dark pb-6">
+    <div class="container-fluid">
+        <div class="header-body">
+            <div class="row align-items-center py-4">
+                <div class="col-lg-6 col-7">
+                    <h6 class="h2 text-yellow d-inline-block mb-0">Données</h6>
+                    <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+                        <ol class="breadcrumb breadcrumb-links breadcrumb-yellow">
+                            <li class="breadcrumb-item"><a href="#"><i class="fas fa-home"></i></a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Données</li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="col-lg-6 col-5 text-right">
+                    <a href="#modal-upload" class="btn btn-lg btn-secondary"  data-toggle="modal" data-target="#modal-upload"><i class="fa fa-file mr-1"></i>Charger un fichier de données</a>
+                    <a href="#" class="btn btn-lg btn-secondary"><i class="fa fa-database mr-1"></i>Configurer</a>
+                    <a href="#modal-control" class="btn btn-lg btn-secondary" data-toggle="modal" data-target="#modal-control"><i class="fa fa-check mr-1"></i>Control</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock breadcrum %}
+
+
+
+
+{% block content %}
+
+<div class="container-fluid mt--6">
+    <div class="row justify-content-center">
+
+        <div class=" col ">
+            <div class="card">
+                <div class="card-header bg-transparent">
+                    <div class="row">
+                        <div class="col-lg-6 col-5">
+                            <h3 class="mb-0">Liste de données</h3>
+                        </div>
+                        <div class="col-lg-6 col-5 text-right">
+                            <div class="btn-group">
+                                <ul class="nav nav-pills nav-fill flex-column flex-md-row" id="tabs-icons-text" role="tablist">
+                                    <li class="nav-item">
+                                        <a class="nav-link mb-sm-3 mb-md-0 active" id="tabs-icons-text-1-tab" data-toggle="tab" href="#tabs-icons-text-1" role="tab" aria-controls="tabs-icons-text-1" aria-selected="true"><i class="ni ni-cloud-upload-96 mr-2"></i>Variables <span class="badge badge-dark ml-2">{{ datahead|length }}</span></a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link mb-sm-3 mb-md-0" id="tabs-icons-text-2-tab" data-toggle="tab" href="#tabs-icons-text-2" role="tab" aria-controls="tabs-icons-text-2" aria-selected="false"><i class="ni ni-bell-55 mr-2"></i>Données <span class="badge badge-primary ml-2">{{ data_set|length }}</span></a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+               <div class="card-body">
+                    <div class="tab-content" id="myTabContent">
+                        <!-- Zone de présentation des variables-->
+                        <div class="tab-pane fade show active" id="tabs-icons-text-1" role="tabpanel" aria-labelledby="tabs-icons-text-1-tab">
+                            <div class="table-responsive">
+                                <div>
+                                    <table id="myTable" class="table table-bordered table-striped align-items-center table-dark">
+                                    <!-- <table class="table align-items-center table-dark"> -->
+                                        <thead class="thead-dark">
+                                            <tr>
+                                                <th scope="col" class="sort" data-sort="num">N°</th>
+                                                <th scope="col" class="sort" data-sort="name">Nom de variable</th>
+                                                <th scope="col" class="sort" data-sort="type">Type</th>
+                                                <th scope="col"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="list">
+                                            {% for item,elem in data_var %}
+                                                
+                                                <tr>
+                                                    <td>{{ forloop.counter }}</td>
+                                                    <td> {{ item }}</td>
+                                                    <td> {{ elem }}</td>
+                                                    <td class="text-right">
+                                                        <div class="dropdown">
+                                                            <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                            <i class="fas fa-ellipsis-v"></i>
+                                                            </a>
+                                                            <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
+                                                                <a class="dropdown-item" href="#">Action</a>
+                                                                <a class="dropdown-item" href="#">Another action</a>
+                                                                <a class="dropdown-item" href="#">Something else here</a>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        <div class="tab-pane fade" id="tabs-icons-text-2" role="tabpanel" aria-labelledby="tabs-icons-text-2-tab">
+                            <div class="table-responsive">
+                                <div>
+                                    <table id="myTable2" class="table table-bordered table-striped align-items-center table-dark">
+                                        <thead>
+                                            <tr></tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="modal-upload" tabindex="-1" role="dialog" aria-labelledby="modal-notification" aria-hidden="true">
+        <div class="modal-dialog modal-danger modal-dialog-centered modal-" role="document">
+            <div class="modal-content bg-gradient-indigo">
+                
+                <div class="modal-header">
+                    <h6 class="modal-title" id="modal-title-notification">Chargement de donnees</h6>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                
+                <div class="modal-body">
+                    {% if messages %}
+                        {% for message in messages %}
+                            <p>{{ message }}</p>
+                        {% endfor %}
+                    {% endif %}
+                    <div class="py-3 text-center">
+                        <!-- <form action="" method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            
+                            <div class="form-group mb-4 mt-3">
+                                <input type="file" title="Upload excel file" name="excel_file" class="form-control" id="exampleFormControlFile1" required="required" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
+                            </div>
+                            
+                            <div class="form-group hide">
+                                <input type="text" id="separateur" name="separateur" placeholder="Colones séparé par" class="form-control">
+                            </div>
+
+                            <button type="submit" name="time" class="mt-4 mb-4 btn btn-primary btn-block"><i class="ni ni-cloud-upload-96 ni-lg mr-2"></i> Charger</button>
+                        </form> -->
+                        <form method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            {{ form.as_p }}
+                            <button type="submit" name="time" class="mt-4 mb-4 btn btn-primary btn-block"><i class="ni ni-cloud-upload-96 ni-lg mr-2"></i> Charger</button>
+                        </form>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+        <div class="modal fade" id="modal-control" tabindex="-1" role="dialog" aria-labelledby="modal-notification" aria-hidden="true">
+            <div class="modal-dialog modal-danger modal-dialog-centered modal-" role="document">
+                <div class="modal-content bg-gradient-indigo">
+                    
+                    <div class="modal-header">
+                        <h6 class="modal-title" id="modal-title-notification">Données null</h6>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    
+                    <div class="modal-body">
+                        
+                        <div class="py-3">
+                            <table id="myTable" class="table table-bordered table-striped align-items-center table-dark">
+                                <!-- <table class="table align-items-center table-dark"> -->
+                                    <thead class="thead-dark">
+                                        <tr>
+                                            <th scope="col" class="sort" data-sort="num">Var</th>
+                                            <th scope="col" class="sort" data-sort="name">Total null</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="list">
+                                        {% for x, val in data_null %}
+                                            <tr>
+                                                <td>{{ x }}</td>
+                                                <td>{{ val }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                            </table>
+                        
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+{% endblock content %}
+
+
+{% block script%}
+    <script>
+        $('#myTable').DataTable();
+       
+
+        
+        // Récupérer les colonnes automatiquement
+        $.ajax({
+            url: "{{ dataList }}",
+            method: "GET",
+            success: function(data) {
+                var columns = [];
+                if (data.length > 0) {
+                    var keys = Object.keys(data[0]);
+                    for (var i = 0; i < keys.length; i++) {
+                        columns.push({ title: keys[i], data: keys[i] });
+                    }
+                }
+                $('#myTable2').DataTable().clear().destroy();
+                $('#myTable2').DataTable({
+                    "ajax": {
+                        "url": "{{ dataList }}",
+                        "dataSrc": ""
+                    },
+                    "columns": columns
+                });
+            }
+        });
+        
+    </script>
+{% endblock %}
